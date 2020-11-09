@@ -17,7 +17,11 @@ int pal_emulation = 0;
 bool swapDuty = false;
 bool turbo = false;
 
-int isloaded = 0;
+namespace {
+
+int is_loaded = 0;
+
+} // namespace anonymous
 
 //--------------------------------------------------------------------
 // message
@@ -92,11 +96,11 @@ ArchiveScanRecord FCEUD_ScanArchive(std::string) {
 //--------------------------------------------------------------------
 
 int LoadGame(const char* path, bool silent) {
-    if (isloaded != 0) FCEUI_CloseGame();
+    if (is_loaded != 0) FCEUI_CloseGame();
 
     if (!FCEUI_LoadGame(path, 1, silent)) return 0;
 
-    isloaded = 1;
+    is_loaded = 1;
 
     return 1;
 }

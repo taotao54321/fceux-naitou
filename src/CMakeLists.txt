@@ -465,6 +465,7 @@ set(SRC_DRIVERS_COMMON
 #endif()
 
 set(SRC_DRIVERS_SDL
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/naitou/core.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/drivers/naitou/driver.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/drivers/naitou/main.cpp
 )

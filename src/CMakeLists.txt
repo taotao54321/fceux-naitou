@@ -1,4 +1,3 @@
-
 if ( ${GTK} )
 message( STATUS "GUI backend: GTK")
 set( APP_NAME fceux-gtk)
@@ -9,6 +8,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 endif()
+
+find_package(Boost REQUIRED)
+find_package(fmt REQUIRED)
 
 if(WIN32)
   set(SOURCES ${SRC_CORE} ${SRC_DRIVERS_COMMON} ${SRC_DRIVERS_WIN})
@@ -402,65 +404,70 @@ set(SRC_DRIVERS_COMMON
   ${CMAKE_CURRENT_SOURCE_DIR}/drivers/videolog/rgbtorgb.cpp
 )
 
-if ( ${GTK} )
+#if ( ${GTK} )
+#set(SRC_DRIVERS_SDL
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/cheat.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/config.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/debugger.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/glxwin.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/gui.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/GamePadConf.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/input.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/memview.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/ramwatch.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-joystick.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-sound.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-throttle.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-video.cpp
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/unix-netplay.cpp
+#)
+#else()
+#set(SRC_DRIVERS_SDL
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/main.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleWindow.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleViewerGL.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleViewerSDL.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/GamePadConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/HotKeyConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/PaletteConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/GuiConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/MoviePlay.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/MovieOptions.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/LuaControl.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/CheatsConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/GameGenie.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/HexEditor.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/CodeDataLogger.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/SymbolicDebug.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleDebugger.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleUtilities.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleVideoConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleSoundConf.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/iNesHeaderEditor.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/TraceLogger.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/AboutWindow.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/fceuWrapper.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ppuViewer.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/NameTableViewer.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/RamWatch.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/RamSearch.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/config.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/input.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/nes_shm.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/keyscan.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-sound.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-video.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-joystick.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-throttle.cpp  
+#  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/unix-netplay.cpp
+#)
+#endif()
+
 set(SRC_DRIVERS_SDL
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/cheat.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/config.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/debugger.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/glxwin.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/gui.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/GamePadConf.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/input.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/memview.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/ramwatch.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-joystick.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-sound.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-throttle.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/sdl-video.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/sdl/unix-netplay.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/naitou/driver.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/naitou/main.cpp
 )
-else()
-set(SRC_DRIVERS_SDL
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/main.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleWindow.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleViewerGL.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleViewerSDL.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/GamePadConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/HotKeyConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/PaletteConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/GuiConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/MoviePlay.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/MovieOptions.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/LuaControl.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/CheatsConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/GameGenie.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/HexEditor.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/CodeDataLogger.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/SymbolicDebug.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleDebugger.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleUtilities.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleVideoConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ConsoleSoundConf.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/iNesHeaderEditor.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/TraceLogger.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/AboutWindow.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/fceuWrapper.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/ppuViewer.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/NameTableViewer.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/RamWatch.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/RamSearch.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/config.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/input.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/nes_shm.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/keyscan.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-sound.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-video.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-joystick.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/sdl-throttle.cpp  
-  ${CMAKE_CURRENT_SOURCE_DIR}/drivers/Qt/unix-netplay.cpp
-)
-endif()
 
 set(SOURCES ${SRC_CORE} ${SRC_DRIVERS_COMMON} ${SRC_DRIVERS_SDL})
 
@@ -491,6 +498,8 @@ else()
    endif()
 endif()
 
+target_compile_features(${APP_NAME} PRIVATE cxx_std_17)
+
 if ( ${GTK} )
    target_link_libraries( ${APP_NAME}  
    ${GTK3_LDFLAGS} ${X11_LDFLAGS}
@@ -498,6 +507,7 @@ if ( ${GTK} )
  	${SDL2_LDFLAGS}
 	${MINIZIP_LDFLAGS} ${ZLIB_LIBRARIES}
 	${LUA_LDFLAGS}
+	fmt::fmt
  	${SYS_LIBS}
 )
 else()
@@ -508,6 +518,7 @@ target_link_libraries( ${APP_NAME}
  	${SDL2_LDFLAGS}
 	${MINIZIP_LDFLAGS} ${ZLIB_LIBRARIES}
 	${LUA_LDFLAGS}
+        fmt::fmt
  	${SYS_LIBS}
 )
 endif()

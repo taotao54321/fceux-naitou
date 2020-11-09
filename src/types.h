@@ -62,65 +62,63 @@ typedef signed int int32;
 #define alloca __builtin_alloca
 #endif
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <inttypes.h>
+
+#include <stdint.h>
 typedef int8_t int8;
 typedef int16_t int16;
 typedef int32_t int32;
+typedef int64_t int64;
 
 typedef uint8_t uint8;
 typedef uint16_t uint16;
 typedef uint32_t uint32;
+typedef uint64_t uint64;
 
 #define FCEUX_fstat fstat
 #endif
 
 #ifdef __GNUC__
- typedef unsigned long long uint64;
- typedef uint64 u64;
- typedef long long int64;
- #define INLINE inline
- #define GINLINE inline
+#define INLINE inline
+#define GINLINE inline
 #elif MSVC
- typedef __int64 int64;
- typedef unsigned __int64 uint64;
- #define __restrict__
- #define INLINE __inline
- #define GINLINE			/* Can't declare a function INLINE
-					   and global in MSVC.  Bummer.
-					*/
- #define PSS_STYLE 2			/* Does MSVC compile for anything
-					   other than Windows/DOS targets?
-					*/
+#define __restrict__
+#define INLINE __inline
+#define GINLINE /* Can't declare a function INLINE \
+                   and global in MSVC.  Bummer.    \
+                */
+#define PSS_STYLE 2 /* Does MSVC compile for anything  \
+                       other than Windows/DOS targets? \
+                    */
 
- #if _MSC_VER >= 1300
-  #pragma warning(disable:4244) //warning C4244: '=' : conversion from 'uint32' to 'uint8', possible loss of data
-  #pragma warning(disable:4996) //'strdup' was declared deprecated
+#if _MSC_VER >= 1300
+#pragma warning(disable : 4244) //warning C4244: '=' : conversion from 'uint32' to 'uint8', possible loss of data
+#pragma warning(disable : 4996) //'strdup' was declared deprecated
 #endif
 
- #if _MSC_VER < 1400
-  #define vsnprintf _vsnprintf
- #endif
+#if _MSC_VER < 1400
+#define vsnprintf _vsnprintf
+#endif
 #endif
 
-#if PSS_STYLE==2
+#if PSS_STYLE == 2
 
 #define PSS "\\"
 #define PS '\\'
 
-#elif PSS_STYLE==1
+#elif PSS_STYLE == 1
 
 #define PSS "/"
 #define PS '/'
 
-#elif PSS_STYLE==3
+#elif PSS_STYLE == 3
 
 #define PSS "\\"
 #define PS '\\'
 
-#elif PSS_STYLE==4
+#elif PSS_STYLE == 4
 
 #define PSS ":"
 #define PS ':'
@@ -131,12 +129,11 @@ typedef uint32_t uint32;
 
 #endif
 
-
 typedef void (*writefunc)(uint32 A, uint8 V);
 typedef uint8 (*readfunc)(uint32 A);
 
 #ifndef CTASSERT
-#define CTASSERT(x)  typedef char __assert ## y[(x) ? 1 : -1];
+#define CTASSERT(x) typedef char __assert##y[(x) ? 1 : -1];
 #endif
 
 #include "utils/endian.h"

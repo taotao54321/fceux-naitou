@@ -21,6 +21,8 @@
 #ifndef CONDDEBUG_H
 #define CONDDEBUG_H
 
+#include "types.h"
+
 #define TYPE_NO 0
 #define TYPE_REG 1
 #define TYPE_FLAG 2
@@ -49,18 +51,17 @@ extern uint16 debugLastAddress;
 extern uint8 debugLastOpcode;
 
 //mbg merge 7/18/06 turned into sane c++
-struct Condition
-{
-	Condition* lhs;
-	Condition* rhs;
+struct Condition {
+    Condition* lhs;
+    Condition* rhs;
 
-	unsigned int type1;
-	unsigned int value1;
+    unsigned int type1;
+    unsigned int value1;
 
-	unsigned int op;
+    unsigned int op;
 
-	unsigned int type2;
-	unsigned int value2;
+    unsigned int type2;
+    unsigned int value2;
 };
 
 void freeTree(Condition* c);

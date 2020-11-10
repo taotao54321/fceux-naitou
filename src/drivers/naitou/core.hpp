@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <functional>
 #include <memory>
 #include <string>
@@ -9,40 +10,98 @@
 
 #include "driver.hpp"
 #include "prelude.hpp"
+#include "util.hpp"
 
 class Buttons {
 private:
     u8 value_ { 0 }; // RLDUTSBA
 
 public:
-    [[nodiscard]] u8 value() const;
+    constexpr Buttons() = default;
 
-    [[nodiscard]] bool A() const;
-    [[nodiscard]] bool B() const;
-    [[nodiscard]] bool S() const;
-    [[nodiscard]] bool T() const;
-    [[nodiscard]] bool U() const;
-    [[nodiscard]] bool D() const;
-    [[nodiscard]] bool L() const;
-    [[nodiscard]] bool R() const;
+    [[nodiscard]] constexpr u8 value() const { return value_; }
 
-    Buttons& A(bool on);
-    Buttons& B(bool on);
-    Buttons& S(bool on);
-    Buttons& T(bool on);
-    Buttons& U(bool on);
-    Buttons& D(bool on);
-    Buttons& L(bool on);
-    Buttons& R(bool on);
+    [[nodiscard]] constexpr bool is_empty() const { return value_ == 0; }
 
-    Buttons& flipA();
-    Buttons& flipB();
-    Buttons& flipS();
-    Buttons& flipT();
-    Buttons& flipU();
-    Buttons& flipD();
-    Buttons& flipL();
-    Buttons& flipR();
+    [[nodiscard]] constexpr bool A() const { return BIT_TEST(value_, 0); }
+    [[nodiscard]] constexpr bool B() const { return BIT_TEST(value_, 1); }
+    [[nodiscard]] constexpr bool S() const { return BIT_TEST(value_, 2); }
+    [[nodiscard]] constexpr bool T() const { return BIT_TEST(value_, 3); }
+    [[nodiscard]] constexpr bool U() const { return BIT_TEST(value_, 4); }
+    [[nodiscard]] constexpr bool D() const { return BIT_TEST(value_, 5); }
+    [[nodiscard]] constexpr bool L() const { return BIT_TEST(value_, 6); }
+    [[nodiscard]] constexpr bool R() const { return BIT_TEST(value_, 7); }
+
+    [[nodiscard]] constexpr Buttons& clear() {
+        value_ = 0;
+        return *this;
+    }
+
+    constexpr Buttons& A(bool on) {
+        value_ = BIT_ASSIGN(value_, 0, on);
+        return *this;
+    }
+    constexpr Buttons& B(bool on) {
+        value_ = BIT_ASSIGN(value_, 1, on);
+        return *this;
+    }
+    constexpr Buttons& S(bool on) {
+        value_ = BIT_ASSIGN(value_, 2, on);
+        return *this;
+    }
+    constexpr Buttons& T(bool on) {
+        value_ = BIT_ASSIGN(value_, 3, on);
+        return *this;
+    }
+    constexpr Buttons& U(bool on) {
+        value_ = BIT_ASSIGN(value_, 4, on);
+        return *this;
+    }
+    constexpr Buttons& D(bool on) {
+        value_ = BIT_ASSIGN(value_, 5, on);
+        return *this;
+    }
+    constexpr Buttons& L(bool on) {
+        value_ = BIT_ASSIGN(value_, 6, on);
+        return *this;
+    }
+    constexpr Buttons& R(bool on) {
+        value_ = BIT_ASSIGN(value_, 7, on);
+        return *this;
+    }
+
+    constexpr Buttons& flipA() {
+        value_ = BIT_FLIP(value_, 0);
+        return *this;
+    }
+    constexpr Buttons& flipB() {
+        value_ = BIT_FLIP(value_, 1);
+        return *this;
+    }
+    constexpr Buttons& flipS() {
+        value_ = BIT_FLIP(value_, 2);
+        return *this;
+    }
+    constexpr Buttons& flipT() {
+        value_ = BIT_FLIP(value_, 3);
+        return *this;
+    }
+    constexpr Buttons& flipU() {
+        value_ = BIT_FLIP(value_, 4);
+        return *this;
+    }
+    constexpr Buttons& flipD() {
+        value_ = BIT_FLIP(value_, 5);
+        return *this;
+    }
+    constexpr Buttons& flipL() {
+        value_ = BIT_FLIP(value_, 6);
+        return *this;
+    }
+    constexpr Buttons& flipR() {
+        value_ = BIT_FLIP(value_, 7);
+        return *this;
+    }
 };
 
 // 事前に Snapshot オブジェクトを確保し、それに対して save/load を行う (Lua API と同じ)。
@@ -96,6 +155,11 @@ public:
     template <size_t N>
     void read_bytes(u16 addr, u8 (&buf)[N]) {
         read_bytes(addr, N, buf);
+    }
+
+    template <size_t N>
+    void read_bytes(u16 addr, std::array<u8, N>& buf) {
+        read_bytes(addr, N, buf.data());
     }
 
     template <class OutputIt>

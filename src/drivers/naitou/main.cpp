@@ -32,9 +32,15 @@ int main(const int argc, const char* const* argv) {
         PRINTLN("");
     };
 
+    auto hook_handle = core.hook_before_exec(0xC239, [&core]() {
+        PRINTLN("Frame {}: NMI", core.frame_count());
+    });
+
     core.run_frames(20);
     core.snapshot_save(snapshot);
     core.snapshot_save(snapshot);
+
+    core.unhook_before_exec(hook_handle);
 
     core.run_frame(Buttons {}.T(true));
     core.run_frames(20);

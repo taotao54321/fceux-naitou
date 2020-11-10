@@ -26,6 +26,7 @@
 #ifdef _S9XLUA_H
 #include "fceulua.h"
 #endif
+#include "driver.h"
 
 #include "x6502abbrev.h"
 
@@ -503,6 +504,7 @@ extern int test; test++;
    #ifdef _S9XLUA_H
    CallRegisteredLuaMemHook(_PC, 1, 0, LUAMEMHOOK_EXEC);
    #endif
+   FCEUD_CallHookBeforeExec(_PC);
    _PC++;
    switch(b1)
    {

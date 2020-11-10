@@ -1,13 +1,21 @@
+#include <algorithm>
 #include <chrono>
 #include <cstdarg>
 #include <cstdio>
+#include <functional>
+#include <iterator>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "driver.h"
 #include "emufile.h"
 #include "file.h"
 #include "git.h"
 #include "types.h"
+
+#include "driver.hpp"
+#include "prelude.hpp"
 
 // これらは定数
 int KillFCEUXonFrame = 0;
@@ -21,7 +29,57 @@ namespace {
 
 int is_loaded = 0;
 
+struct HookExec {
+    int id;
+    u16 addr;
+    std::function<void()> f;
+    HookExec(int id, u16 addr, std::function<void()> f)
+        : id(id)
+        , addr(addr)
+        , f(std::move(f)) {}
+};
+
+std::vector<HookExec> hooks_before_exec;
+
+int gen_hook_id() {
+    static int id = 0;
+    return id++;
+}
+
 } // namespace anonymous
+
+//--------------------------------------------------------------------
+// hook
+//--------------------------------------------------------------------
+
+void FCEUD_CallHookBeforeExec(const u16 addr) {
+    for (const auto& hook : hooks_before_exec) {
+        if (hook.addr == addr)
+            hook.f();
+    }
+}
+
+int AddHookBeforeExec(const u16 addr, std::function<void()> f) {
+    const int id = gen_hook_id();
+    hooks_before_exec.emplace_back(id, addr, f);
+    return id;
+}
+
+void RemoveHookBeforeExec(const int id) {
+    using std::begin, std::end;
+
+    const auto first = begin(hooks_before_exec);
+    const auto last = end(hooks_before_exec);
+
+    const auto it = std::find_if(first, last, [id](const auto& hook) { return hook.id == id; });
+    if (it == last) PANIC("RemoveHookBeforeExec(): invalid id: {}", id);
+
+    hooks_before_exec.erase(it);
+}
+
+void ClearHookBeforeExec() {
+    hooks_before_exec.clear();
+}
 
 //--------------------------------------------------------------------
 // message

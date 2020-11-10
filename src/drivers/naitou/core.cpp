@@ -161,6 +161,13 @@ Snapshot::Snapshot()
     : impl_(new SnapshotImpl) {}
 
 //--------------------------------------------------------------------
+// HookHandle
+//--------------------------------------------------------------------
+
+HookHandle::HookHandle(int id)
+    : id_(id) {}
+
+//--------------------------------------------------------------------
 // Core
 //--------------------------------------------------------------------
 
@@ -223,4 +230,12 @@ void Core::snapshot_save(Snapshot& snapshot) const {
     auto& file = snapshot.impl_->file_;
     if (!FCEUSS_SaveMS(&file, Z_NO_COMPRESSION))
         PANIC("FCEUSS_SaveMS() failed");
+}
+
+void Core::unhook_before_exec(HookHandle handle) {
+    RemoveHookBeforeExec(handle.id_);
+}
+
+void Core::clear_hooks_before_exec() {
+    ClearHookBeforeExec();
 }

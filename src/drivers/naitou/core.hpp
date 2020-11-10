@@ -1,10 +1,13 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
+#include <utility>
 
 #include <boost/core/noncopyable.hpp>
 
+#include "driver.hpp"
 #include "prelude.hpp"
 
 class Buttons {
@@ -57,6 +60,16 @@ public:
     Snapshot();
 };
 
+// フック解除用
+class HookHandle {
+private:
+    int id_;
+
+    explicit HookHandle(int id);
+
+    friend class Core;
+};
+
 class Core : private boost::noncopyable {
 private:
     u32 gamepad_data_ { 0 };
@@ -103,4 +116,13 @@ public:
     void snapshot_load(Snapshot& snapshot);
 
     void snapshot_save(Snapshot& snapshot) const;
+
+    template <class F>
+    HookHandle hook_before_exec(u16 addr, F&& f) {
+        return HookHandle(AddHookBeforeExec(addr, std::function<void()>(std::forward<F>(f))));
+    }
+
+    void unhook_before_exec(HookHandle handle);
+
+    void clear_hooks_before_exec();
 };

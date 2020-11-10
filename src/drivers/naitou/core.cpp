@@ -73,6 +73,7 @@ void Core::run_frame(Buttons buttons) {
     u8* xbuf;
     i32* soundbuf;
     i32 soundbuf_size;
+    // frame skip を有効にしても別に速くならないぽい
     FCEUI_Emulate(&xbuf, &soundbuf, &soundbuf_size, 0);
 }
 

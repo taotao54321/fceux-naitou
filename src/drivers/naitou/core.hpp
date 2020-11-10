@@ -47,7 +47,7 @@ public:
 
 class SnapshotImpl;
 
-class Snapshot {
+class Snapshot : private boost::noncopyable {
 private:
     std::shared_ptr<SnapshotImpl> impl_;
 
@@ -63,6 +63,8 @@ private:
 
 public:
     explicit Core(const std::string& path_rom);
+
+    [[nodiscard]] int frame_count() const;
 
     // 無入力で 1 フレーム進める。
     void run_frame();

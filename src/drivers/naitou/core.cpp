@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <string>
 
+#include <boost/core/noncopyable.hpp>
+
 #include <zlib.h>
 
 #include "debug.h"
@@ -8,6 +10,7 @@
 #include "emufile.h"
 #include "fceu.h"
 #include "git.h"
+#include "movie.h"
 #include "state.h"
 
 #include "core.hpp"
@@ -142,7 +145,7 @@ Buttons& Buttons::flipR() {
 // Snapshot
 //--------------------------------------------------------------------
 
-class SnapshotImpl {
+class SnapshotImpl : private boost::noncopyable {
 private:
     EMUFILE_MEMORY file_ {};
 
@@ -171,6 +174,10 @@ Core::Core(const std::string& path_rom) {
     FCEUI_SetInput(1, SI_NONE, nullptr, 0);
     FCEUI_SetInputFC(SIFC_NONE, nullptr, 0);
     FCEUI_SetInputFourscore(false);
+}
+
+int Core::frame_count() const {
+    return FCEUMOV_GetFrame();
 }
 
 void Core::run_frame() {

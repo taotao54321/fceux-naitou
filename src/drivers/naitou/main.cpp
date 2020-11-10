@@ -24,6 +24,7 @@ int main(const int argc, const char* const* argv) {
     Snapshot snapshot;
 
     const auto dump = [&core]() {
+        PRINTLN("Frame: {}", core.frame_count());
         u8 buf[11];
         core.read_bytes(0x2A9, buf);
         for (const auto b : buf)

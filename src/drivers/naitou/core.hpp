@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include <boost/core/noncopyable.hpp>
@@ -39,6 +40,21 @@ public:
     Buttons& flipD();
     Buttons& flipL();
     Buttons& flipR();
+};
+
+// 事前に Snapshot オブジェクトを確保し、それに対して save/load を行う (Lua API と同じ)。
+// セーブ時に毎回内部バッファを確保するのは遅いので。
+
+class SnapshotImpl;
+
+class Snapshot {
+private:
+    std::shared_ptr<SnapshotImpl> impl_;
+
+    friend class Core;
+
+public:
+    Snapshot();
 };
 
 class Core : private boost::noncopyable {
@@ -81,4 +97,8 @@ public:
         for (; first != last; ++first)
             write_u8(addr++, *first);
     }
+
+    void snapshot_load(Snapshot& snapshot);
+
+    void snapshot_save(Snapshot& snapshot) const;
 };

@@ -21,16 +21,28 @@ int main(const int argc, const char* const* argv) {
     const auto path_rom = argv[1];
 
     Core core(path_rom);
+    Snapshot snapshot;
+
+    const auto dump = [&core]() {
+        u8 buf[11];
+        core.read_bytes(0x2A9, buf);
+        for (const auto b : buf)
+            PRINT("{:02X} ", b);
+        PRINTLN("");
+    };
 
     core.run_frames(20);
+    core.snapshot_save(snapshot);
+    core.snapshot_save(snapshot);
+
     core.run_frame(Buttons {}.T(true));
     core.run_frames(20);
+    dump();
 
-    u8 buf[11];
-    core.read_bytes(0x2A9, buf);
-    for (const auto b : buf)
-        PRINT("{:02X} ", b);
-    PRINTLN("");
+    core.snapshot_load(snapshot);
+    dump();
+    core.snapshot_load(snapshot);
+    dump();
 
     return 0;
 }

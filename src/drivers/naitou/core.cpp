@@ -1,13 +1,22 @@
+#include <cstdio>
 #include <string>
+
+#include <zlib.h>
 
 #include "debug.h"
 #include "driver.h"
+#include "emufile.h"
 #include "fceu.h"
 #include "git.h"
+#include "state.h"
 
 #include "core.hpp"
 #include "driver.hpp"
 #include "prelude.hpp"
+
+//--------------------------------------------------------------------
+// util
+//--------------------------------------------------------------------
 
 namespace {
 
@@ -47,6 +56,10 @@ Integer BIT_FLIP(Integer x, int i) {
 }
 
 } // anonymous namespace
+
+//--------------------------------------------------------------------
+// Buttons
+//--------------------------------------------------------------------
 
 u8 Buttons::value() const { return value_; }
 
@@ -125,6 +138,29 @@ Buttons& Buttons::flipR() {
     return *this;
 }
 
+//--------------------------------------------------------------------
+// Snapshot
+//--------------------------------------------------------------------
+
+class SnapshotImpl {
+private:
+    EMUFILE_MEMORY file_ {};
+
+    friend class Core;
+
+public:
+    SnapshotImpl() = default;
+
+    void clear() { file_.truncate(0); }
+};
+
+Snapshot::Snapshot()
+    : impl_(new SnapshotImpl) {}
+
+//--------------------------------------------------------------------
+// Core
+//--------------------------------------------------------------------
+
 Core::Core(const std::string& path_rom) {
     if (!FCEUI_Initialize()) PANIC("FCEUI_Initialize() failed");
 
@@ -164,4 +200,20 @@ u8 Core::read_u8(u16 addr) {
 
 void Core::write_u8(u16 addr, u8 value) {
     BWrite[addr](addr, value);
+}
+
+void Core::snapshot_load(Snapshot& snapshot) {
+    auto& file = snapshot.impl_->file_;
+
+    file.fseek(0, SEEK_SET);
+    if (!FCEUSS_LoadFP(&file, SSLOADPARAM_NOBACKUP))
+        PANIC("FCEUSS_LoadFP() failed");
+}
+
+void Core::snapshot_save(Snapshot& snapshot) const {
+    snapshot.impl_->clear();
+
+    auto& file = snapshot.impl_->file_;
+    if (!FCEUSS_SaveMS(&file, Z_NO_COMPRESSION))
+        PANIC("FCEUSS_SaveMS() failed");
 }
